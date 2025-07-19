@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ml-microservice
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PORT
+        value: 5001
+      - key: HF_MODEL_NAME
+        value: distilbert-base-uncased
+    autoDeploy: true 
