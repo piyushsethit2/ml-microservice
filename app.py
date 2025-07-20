@@ -3,6 +3,14 @@ import joblib
 import re
 import numpy as np
 import math
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -43,13 +51,18 @@ def extract_features(url):
 def predict():
     data = request.get_json()
     url = data.get('url', '')
+    logger.info(f"Processing URL: {url}")
+    
     X = extract_features(url)
     proba = model.predict_proba(X)[0]
+    
     result = {
         'malicious': bool(proba[1] > 0.5),
         'confidence': float(proba[1]),
         'details': f"ML model confidence: {proba[1]:.2f}"
     }
+    
+    logger.info(f"Prediction result: {result}")
     return jsonify(result)
 
 @app.route('/health', methods=['GET'])
